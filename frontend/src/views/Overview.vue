@@ -28,6 +28,41 @@
         </tr>
       </tbody>
     </table>
+
+    <section class="side-block overview-grave">
+      <h4>字段墓碑汇总（读取元数据管理统一视图）</h4>
+      <div class="stat-row">
+        <article class="stat-card">
+          <span class="stat-label">字段定义总数</span>
+          <strong class="stat-value">{{ grave.fieldTotal }}</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">已生效字段</span>
+          <strong class="stat-value">{{ grave.effectiveFields }}</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">待换章墓碑</span>
+          <strong class="stat-value">{{ grave.pendingTombs }}</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">已封碑</span>
+          <strong class="stat-value">{{ grave.sealedTombs }}</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">未换章引用</span>
+          <strong class="stat-value">{{ grave.openReferences }}</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">失效引用</span>
+          <strong class="stat-value">{{ grave.invalidReferences }}</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">旁证</span>
+          <strong class="stat-value">{{ grave.sideEvidence }}</strong>
+        </article>
+      </div>
+    </section>
+
     <footer class="page-foot">
       <span>数据保存在本机浏览器里，换浏览器或清缓存会回到示例数据</span>
     </footer>
@@ -38,15 +73,26 @@
 import { onMounted, ref } from 'vue'
 
 import { loadOverview } from '@/api/local-service'
-import type { OverviewResult } from '@/data/types'
+import type { GraveSummary, OverviewResult } from '@/data/types'
 
 const cards = ref<OverviewResult['cards']>([])
 const moduleRows = ref<OverviewResult['modules']>([])
+const grave = ref<GraveSummary>({
+  fieldTotal: 0,
+  effectiveFields: 0,
+  pendingReview: 0,
+  pendingTombs: 0,
+  sealedTombs: 0,
+  openReferences: 0,
+  invalidReferences: 0,
+  sideEvidence: 0,
+})
 
 function refresh() {
   const payload = loadOverview()
   cards.value = payload.cards
   moduleRows.value = payload.modules
+  grave.value = payload.grave
 }
 
 onMounted(refresh)
